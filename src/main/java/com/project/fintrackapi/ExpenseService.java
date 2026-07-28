@@ -1,4 +1,4 @@
 package com.project.fintrackapi;
 
-public class Expenses {
+public class ExpenseService {
 }

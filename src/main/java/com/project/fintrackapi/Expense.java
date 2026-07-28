@@ -7,7 +7,7 @@ import java.time.LocalDate;
 import java.util.Objects;
 
 @Entity
-public class Income {
+public class Expense {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -15,21 +15,28 @@ public class Income {
     @JoinColumn(name = "account_id")
     private Account account;
     private BigDecimal amount;
-    private String source;
-    private LocalDate dateReceived;
+    private Category category;
+    private LocalDate datePaid;
     @Enumerated(EnumType.STRING)
     private Frequency frequency;
     private String description;
 
+    public Account getAccount() {
+        return account;
+    }
 
-    public Income() {
+    public void setAccount(Account account) {
+        this.account = account;
+    }
+
+    public Expense() {
 
     }
 
-    public Income(BigDecimal amount, String source, LocalDate dateReceived, Frequency frequency, String description) {
+    public Expense(BigDecimal amount, Category category, LocalDate datePaid, Frequency frequency, String description) {
         this.amount = amount;
-        this.source = source;
-        this.dateReceived = dateReceived;
+        this.category = category;
+        this.datePaid = datePaid;
         this.frequency = frequency;
         this.description = description;
     }
@@ -42,14 +49,6 @@ public class Income {
         this.id = id;
     }
 
-    public Account getAccount() {
-        return account;
-    }
-
-    public void setAccount(Account account) {
-        this.account = account;
-    }
-
     public BigDecimal getAmount() {
         return amount;
     }
@@ -58,20 +57,20 @@ public class Income {
         this.amount = amount;
     }
 
-    public String getSource() {
-        return source;
+    public Category getCategory() {
+        return category;
     }
 
-    public void setSource(String source) {
-        this.source = source;
+    public void setCategory(Category category) {
+        this.category = category;
     }
 
-    public LocalDate getDateReceived() {
-        return dateReceived;
+    public LocalDate getDatePaid() {
+        return datePaid;
     }
 
-    public void setDateReceived(LocalDate dateReceived) {
-        this.dateReceived = dateReceived;
+    public void setDatePaid(LocalDate datePaid) {
+        this.datePaid = datePaid;
     }
 
     public Frequency getFrequency() {
@@ -93,12 +92,12 @@ public class Income {
     @Override
     public boolean equals(Object object) {
         if (object == null || getClass() != object.getClass()) return false;
-        Income income = (Income) object;
-        return Objects.equals(id, income.id) && Objects.equals(account, income.account) && Objects.equals(amount, income.amount) && Objects.equals(source, income.source) && Objects.equals(dateReceived, income.dateReceived) && frequency == income.frequency && Objects.equals(description, income.description);
+        Expense expense = (Expense) object;
+        return Objects.equals(id, expense.id) && Objects.equals(account, expense.account) && Objects.equals(amount, expense.amount) && category == expense.category && Objects.equals(datePaid, expense.datePaid) && frequency == expense.frequency && Objects.equals(description, expense.description);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, account, amount, source, dateReceived, frequency, description);
+        return Objects.hash(id, account, amount, category, datePaid, frequency, description);
     }
 }

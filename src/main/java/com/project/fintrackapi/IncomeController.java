@@ -1,5 +1,4 @@
 package com.project.fintrackapi;
 
-public class Savings {
-    
+public class IncomeController {
 }
