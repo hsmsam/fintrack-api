@@ -15,6 +15,7 @@ public class Expense {
     @JoinColumn(name = "account_id")
     private Account account;
     private BigDecimal amount;
+    @Enumerated(EnumType.STRING)
     private Category category;
     private LocalDate datePaid;
     @Enumerated(EnumType.STRING)

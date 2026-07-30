@@ -1,0 +1,32 @@
+### GET request to example server
+GET https://examples.http-client.intellij.net/get
+    ?generated-in=IntelliJ IDEA
+
+###
+GET http://localhost:8080/api/v1/income
+
+###
+GET http://localhost:8080/api/v1/income/1
+
+###
+POST http://localhost:8080/api/v1/income
+Content-Type: application/json
+
+{
+  "amount": 2000,
+  "source": "Work",
+  "dateReceived": "2026-07-25",
+  "frequency": "MONTHLY",
+  "description": "Monthly work wage "
+}
+
+###
+PUT http://localhost:8080/api/v1/income/1
+Content-Type: application/json
+
+{
+  "frequency": "WEEKLY"
+}
+
+###
+DELETE http://localhost:8080/api/v1/income/1

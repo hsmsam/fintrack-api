@@ -2,5 +2,6 @@ package com.project.fintrackapi;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 
-public interface IncomeRepository extends JpaRepository<Income, Long> {
+public interface BudgetRepository extends JpaRepository<Budget, Long> {
+
 }

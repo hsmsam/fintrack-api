@@ -34,6 +34,10 @@ public class Income {
         this.description = description;
     }
 
+    public BigDecimal totalIncomeThisMonth() {
+
+    }
+
     public Long getId() {
         return id;
     }

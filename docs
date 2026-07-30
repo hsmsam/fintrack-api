@@ -1,0 +1,27 @@
+    public BigDecimal totalIncomeThisMonth() {
+        return getMonthlyIncome();
+    }
+
+    public BigDecimal totalSpentThisMonth() {
+        return getMonthlySpending();
+    }
+
+    public BigDecimal savingsThisMonth() {
+        return getMonthlySaving();
+    }
+
+    public BigDecimal largestExpense() {
+        return getLargestExpense();
+    }
+
+    public Category largestSpendingCategory() {
+        return getLargestSpendingCategory();
+    }
+
+    public List<Budget> overSpentBudgets() {
+        return getBudget();
+    }
+
+    public List<Budget> getBudget() {
+        return budget;
+    }
