@@ -2,7 +2,12 @@ package com.project.fintrackapi;
 
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
+import java.time.Month;
+import java.util.Comparator;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 @Service
 public class ExpenseService {
@@ -54,5 +59,30 @@ public class ExpenseService {
 
     public void deleteAExpense(Long id) {
         expenseRepository.deleteById(id);
+    }
+
+    public Expense largestExpense() {
+        return getAllExpenses().stream()
+                .max(Comparator.comparing(Expense::getAmount))
+                .orElseThrow(null);
+    }
+
+    public BigDecimal totalSpentThisMonth(Month month) {
+        return getAllExpenses().stream()
+                .filter(expense -> expense.getDatePaid().getMonth() == month)
+                .map(Expense::getAmount)
+                .reduce(BigDecimal.ZERO, BigDecimal::add);
+    }
+
+    public Category largestSpendingCategory(Month month) {
+        return getAllExpenses().stream()
+                .filter(expense -> expense.getDatePaid().getMonth() == month)
+                .collect(Collectors.groupingBy(Expense::getCategory, Collectors.reducing(BigDecimal.ZERO, Expense::getAmount, BigDecimal::add
+                        )
+                ))
+                .entrySet().stream()
+                .max(Map.Entry.comparingByValue())
+                .map(Map.Entry::getKey)
+                .orElse(null);
     }
 }

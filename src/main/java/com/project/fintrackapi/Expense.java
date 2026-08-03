@@ -4,6 +4,8 @@ import jakarta.persistence.*;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.util.Comparator;
+import java.util.List;
 import java.util.Objects;
 
 @Entity
@@ -21,14 +23,6 @@ public class Expense {
     @Enumerated(EnumType.STRING)
     private Frequency frequency;
     private String description;
-
-    public Account getAccount() {
-        return account;
-    }
-
-    public void setAccount(Account account) {
-        this.account = account;
-    }
 
     public Expense() {
 
@@ -48,6 +42,14 @@ public class Expense {
 
     public void setId(Long id) {
         this.id = id;
+    }
+
+    public Account getAccount() {
+        return account;
+    }
+
+    public void setAccount(Account account) {
+        this.account = account;
     }
 
     public BigDecimal getAmount() {

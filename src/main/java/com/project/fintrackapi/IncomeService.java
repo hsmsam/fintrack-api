@@ -3,6 +3,7 @@ package com.project.fintrackapi;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
+import java.time.Month;
 import java.util.List;
 
 @Service
@@ -55,5 +56,12 @@ public class IncomeService {
 
     public void deleteAIncome(Long id) {
         incomeRepository.deleteById(id);
+    }
+
+    public BigDecimal totalIncomeThisMonth(Month month) {
+        return getAllIncomes().stream()
+                .filter(expense -> expense.getDateReceived().getMonth() == month)
+                .map(Income::getAmount)
+                .reduce(BigDecimal.ZERO, BigDecimal::add);
     }
 }

@@ -3,14 +3,18 @@ package com.project.fintrackapi;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
+import java.time.Month;
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
 public class BudgetService {
     BudgetRepository budgetRepository;
+    ExpenseRepository expenseRepository;
 
-    public BudgetService(BudgetRepository budgetRepository) {
+    public BudgetService(BudgetRepository budgetRepository, ExpenseRepository expenseRepository) {
         this.budgetRepository = budgetRepository;
+        this.expenseRepository = expenseRepository;
     }
 
     public List<Budget> getAllBudgets() {
@@ -18,8 +22,7 @@ public class BudgetService {
     }
 
     public Budget getBudgetById(Long id) {
-        return budgetRepository.findById(id)
-                .orElseThrow(() -> new IllegalStateException("ID not found"));
+        return budgetRepository.findById(id).orElseThrow(() -> new IllegalStateException("ID not found"));
     }
 
     public void addBudget(Budget budget) {
@@ -27,8 +30,7 @@ public class BudgetService {
     }
 
     public void updateBudget(Long id, Budget budget) {
-        Budget budgetExist = budgetRepository.findById(id)
-                .orElseThrow(() -> new IllegalStateException("ID not found"));
+        Budget budgetExist = budgetRepository.findById(id).orElseThrow(() -> new IllegalStateException("ID not found"));
 
         if (budget.getBudgetCategory() != null) {
             budgetExist.setBudgetCategory(budget.getBudgetCategory());
@@ -49,31 +51,31 @@ public class BudgetService {
         budgetRepository.deleteById(id);
     }
 
-    public BigDecimal totalIncomeThisMonth() {
+    public List<Budget> overSpentBudgets(Month month) {
+        List<Budget> budgets = budgetRepository.findAll();
+        List<Expense> expenses = expenseRepository.findAll();
+        List<Budget> overspent = new ArrayList<>();
 
-    }
+        BigDecimal totalSpent;
 
-    public BigDecimal totalSpentThisMonth() {
+        for (Budget budget : budgets) {
+            if (budget.getBudgetMonth() != month) {
+                continue;
+            }
 
-    }
+            totalSpent = BigDecimal.ZERO;
 
-    public BigDecimal savingsThisMonth() {
+            for (Expense expense : expenses) {
+                if (expense.getDatePaid().getMonth() == month && expense.getCategory() == budget.getBudgetCategory()) {
+                    totalSpent = totalSpent.add(expense.getAmount());
+                }
+            }
 
-    }
+            if (totalSpent.compareTo(budget.getBudgetTarget()) > 0) {
+                overspent.add(budget);
+            }
+        }
 
-    public BigDecimal largestExpense() {
-
-    }
-
-    public Category largestSpendingCategory() {
-
-    }
-
-    public List<Budget> overSpentBudgets() {
-        return getBudget();
-    }
-
-    public List<Budget> getBudget() {
-        return getAllBudgets();
+        return overspent;
     }
 }

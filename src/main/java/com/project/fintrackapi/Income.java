@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.util.List;
 import java.util.Objects;
 
 @Entity
@@ -21,7 +22,6 @@ public class Income {
     private Frequency frequency;
     private String description;
 
-
     public Income() {
 
     }
@@ -32,10 +32,6 @@ public class Income {
         this.dateReceived = dateReceived;
         this.frequency = frequency;
         this.description = description;
-    }
-
-    public BigDecimal totalIncomeThisMonth() {
-
     }
 
     public Long getId() {
