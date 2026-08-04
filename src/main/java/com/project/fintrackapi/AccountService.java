@@ -36,6 +36,8 @@ public class AccountService {
         if (account.getEmail() != null) {
             accountExist.setEmail(account.getEmail());
         }
+
+
     }
 
     public void deleteAccount(Long id) {

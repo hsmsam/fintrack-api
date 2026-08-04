@@ -61,8 +61,9 @@ public class ExpenseService {
         expenseRepository.deleteById(id);
     }
 
-    public Expense largestExpense() {
+    public Expense largestExpense(Month month) {
         return getAllExpenses().stream()
+                .filter(Expense -> Expense.getDatePaid().getMonth() == month)
                 .max(Comparator.comparing(Expense::getAmount))
                 .orElseThrow(null);
     }

@@ -1,0 +1,15 @@
+### GET request to example server
+GET https://examples.http-client.intellij.net/get
+    ?generated-in=IntelliJ IDEA
+
+###
+GET http://localhost:8080/api/v1/financial-summary/JULY
+
+###
+GET http://localhost:8080/api/v1/financial-summary/monthly-savings/March
+
+###
+GET http://localhost:8080/api/v1/financial-summary/running-balance
+
+###
+GET http://localhost:8080/api/v1/financial-summary/savings-rate/July

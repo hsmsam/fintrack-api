@@ -25,6 +25,19 @@ public class BudgetService {
         return budgetRepository.findById(id).orElseThrow(() -> new IllegalStateException("ID not found"));
     }
 
+    public List<Budget> getBudgetsByMonth(Month month) {
+        return getAllBudgets().stream()
+                .filter(budget -> budget.getBudgetMonth() == month)
+                .toList();
+    }
+
+    public BigDecimal monthlyBudget(Month month) {
+        return getAllBudgets().stream()
+                .filter(budget -> budget.getBudgetMonth() == month)
+                .map(Budget::getBudgetTotal)
+                .reduce(BigDecimal.ZERO, BigDecimal::add);
+    }
+
     public void addBudget(Budget budget) {
         budgetRepository.save(budget);
     }
