@@ -13,9 +13,12 @@ POST http://localhost:8080/api/v1/income
 Content-Type: application/json
 
 {
+  "account": {
+    "id": "1"
+  },
   "amount": 2000,
   "source": "Work",
-  "dateReceived": "2026-07-25",
+  "dateReceived": "2026-03-07",
   "frequency": "MONTHLY",
   "description": "Monthly work wage "
 }

@@ -8,7 +8,7 @@ import java.util.List;
 
 @Service
 public class IncomeService {
-    IncomeRepository incomeRepository;
+    private final IncomeRepository incomeRepository;
 
     public IncomeService(IncomeRepository incomeRepository) {
         this.incomeRepository = incomeRepository;
@@ -23,11 +23,22 @@ public class IncomeService {
                 .orElseThrow(() -> new IllegalStateException("ID not found"));
     }
 
-    public void addAIncome(Income income) {
+    public List<Income> getIncomeByAccountId(Long id) {
+        return incomeRepository.findByAccountId(id);
+    }
+
+    public BigDecimal getTotalIncomeThisMonth(Long id, Month month) {
+        return getIncomeByAccountId(id).stream()
+                .filter(expense -> expense.getDateReceived().getMonth() == month)
+                .map(Income::getAmount)
+                .reduce(BigDecimal.ZERO, BigDecimal::add);
+    }
+
+    public void addIncome(Income income) {
         incomeRepository.save(income);
     }
 
-    public void updateAIncome(Long id, Income income) {
+    public void updateIncome(Long id, Income income) {
         Income incomeExists = incomeRepository.findById(id)
                 .orElseThrow(() -> new IllegalStateException("ID not found"));
 
@@ -54,14 +65,7 @@ public class IncomeService {
         incomeRepository.save(incomeExists);
     }
 
-    public void deleteAIncome(Long id) {
+    public void deleteIncome(Long id) {
         incomeRepository.deleteById(id);
-    }
-
-    public BigDecimal totalIncomeThisMonth(Month month) {
-        return getAllIncomes().stream()
-                .filter(expense -> expense.getDateReceived().getMonth() == month)
-                .map(Income::getAmount)
-                .reduce(BigDecimal.ZERO, BigDecimal::add);
     }
 }

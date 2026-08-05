@@ -16,7 +16,6 @@ public class Budget {
     private Account account;
     @Enumerated(EnumType.STRING)
     private Category budgetCategory;
-    private BigDecimal budgetTarget;
     private BigDecimal budgetTotal;
     private java.time.Month budgetMonth;
 
@@ -24,9 +23,8 @@ public class Budget {
 
     }
 
-    public Budget(Category budgetCategory, BigDecimal budgetTarget, BigDecimal budgetTotal, Month budgetMonth) {
+    public Budget(Category budgetCategory, BigDecimal budgetTotal, Month budgetMonth) {
         this.budgetCategory = budgetCategory;
-        this.budgetTarget = budgetTarget;
         this.budgetTotal = budgetTotal;
         this.budgetMonth = budgetMonth;
     }
@@ -55,14 +53,6 @@ public class Budget {
         this.budgetCategory = budgetCategory;
     }
 
-    public BigDecimal getBudgetTarget() {
-        return budgetTarget;
-    }
-
-    public void setBudgetTarget(BigDecimal budgetTarget) {
-        this.budgetTarget = budgetTarget;
-    }
-
     public BigDecimal getBudgetTotal() {
         return budgetTotal;
     }
@@ -83,11 +73,11 @@ public class Budget {
     public boolean equals(Object object) {
         if (object == null || getClass() != object.getClass()) return false;
         Budget budget = (Budget) object;
-        return Objects.equals(id, budget.id) && Objects.equals(account, budget.account) && budgetCategory == budget.budgetCategory && Objects.equals(budgetTarget, budget.budgetTarget) && Objects.equals(budgetTotal, budget.budgetTotal) && budgetMonth == budget.budgetMonth;
+        return Objects.equals(id, budget.id) && Objects.equals(account, budget.account) && budgetCategory == budget.budgetCategory && Objects.equals(budgetTotal, budget.budgetTotal) && budgetMonth == budget.budgetMonth;
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, account, budgetCategory, budgetTarget, budgetTotal, budgetMonth);
+        return Objects.hash(id, account, budgetCategory, budgetTotal, budgetMonth);
     }
 }

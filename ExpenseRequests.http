@@ -9,21 +9,31 @@ GET http://localhost:8080/api/v1/expense
 GET http://localhost:8080/api/v1/expense/1
 
 ###
+GET http://localhost:8080/api/v1/expense/total-spent/1/MARCH
+
+###
+GET http://localhost:8080/api/v1/expense/largest-expense/1/MARCH
+
+###
+GET http://localhost:8080/api/v1/expense/largest-spending-category/1/MARCH
+
+###
 POST http://localhost:8080/api/v1/expense
 Content-Type: application/json
 
 {
   "account": {
+    "id": 1
   },
-  "amount": 200,
-  "category": "BILLS",
-  "datePaid": "2026-07-25",
+  "amount": 140,
+  "category": "LEISURE",
+  "datePaid": "2026-03-10",
   "frequency": "MONTHLY",
-  "description": "Severn Trent water bill"
+  "description": "Going out having fun and eating"
 }
 
 ###
-PUT http://localhost:8080/api/v1/1
+PUT http://localhost:8080/api/v1/expense/1
 Content-Type: application/json
 
 {
@@ -31,4 +41,4 @@ Content-Type: application/json
 }
 
 ###
-DELETE http://localhost:8080/api/v1/1
+DELETE http://localhost:8080/api/v1/expense/1

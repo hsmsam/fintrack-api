@@ -13,8 +13,8 @@ POST http://localhost:8080/api/v1/account
 Content-Type: application/json
 
 {
-  "name": "",
-  "email": ""
+  "name": "Arthur Stewart",
+  "email": "Arthurstewart@gmail.com"
 }
 
 ###

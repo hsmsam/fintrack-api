@@ -11,7 +11,7 @@ import java.util.stream.Collectors;
 
 @Service
 public class ExpenseService {
-    ExpenseRepository expenseRepository;
+    private final ExpenseRepository expenseRepository;
 
     public ExpenseService(ExpenseRepository expenseRepository) {
         this.expenseRepository = expenseRepository;
@@ -26,11 +26,41 @@ public class ExpenseService {
                 .orElseThrow(() -> new IllegalStateException("ID not found"));
     }
 
-    public void addAExpense(Expense expense) {
+    public List<Expense> getExpenseByAccountId(Long id) {
+        return expenseRepository.findByAccountId(id);
+    }
+
+    public BigDecimal getTotalSpentThisMonth(Long accountId, Month month) {
+        return expenseRepository.findByAccountId(accountId).stream()
+                .filter(expense -> expense.getDatePaid().getMonth() == month)
+                .map(Expense::getAmount)
+                .reduce(BigDecimal.ZERO, BigDecimal::add);
+    }
+
+    public Expense getLargestExpense(Long accountId, Month month) {
+        return expenseRepository.findByAccountId(accountId).stream()
+                .filter(Expense -> Expense.getDatePaid().getMonth() == month)
+                .max(Comparator.comparing(Expense::getAmount))
+                .orElse(null);
+    }
+
+    public Category getlargestSpendingCategory(Long accountId, Month month) {
+        return expenseRepository.findByAccountId(accountId).stream()
+                .filter(expense -> expense.getDatePaid().getMonth() == month)
+                .collect(Collectors.groupingBy(Expense::getCategory, Collectors.reducing(BigDecimal.ZERO, Expense::getAmount, BigDecimal::add
+                        )
+                ))
+                .entrySet().stream()
+                .max(Map.Entry.comparingByValue())
+                .map(Map.Entry::getKey)
+                .orElse(null);
+    }
+
+    public void addExpense(Expense expense) {
         expenseRepository.save(expense);
     }
 
-    public void updateAExpense(Long id, Expense expense) {
+    public void updateExpense(Long id, Expense expense) {
         Expense expenseExist = expenseRepository.findById(id)
                 .orElseThrow(() -> new IllegalStateException("ID not found"));
 
@@ -57,33 +87,7 @@ public class ExpenseService {
         expenseRepository.save(expenseExist);
     }
 
-    public void deleteAExpense(Long id) {
+    public void deleteExpense(Long id) {
         expenseRepository.deleteById(id);
-    }
-
-    public Expense largestExpense(Month month) {
-        return getAllExpenses().stream()
-                .filter(Expense -> Expense.getDatePaid().getMonth() == month)
-                .max(Comparator.comparing(Expense::getAmount))
-                .orElseThrow(null);
-    }
-
-    public BigDecimal totalSpentThisMonth(Month month) {
-        return getAllExpenses().stream()
-                .filter(expense -> expense.getDatePaid().getMonth() == month)
-                .map(Expense::getAmount)
-                .reduce(BigDecimal.ZERO, BigDecimal::add);
-    }
-
-    public Category largestSpendingCategory(Month month) {
-        return getAllExpenses().stream()
-                .filter(expense -> expense.getDatePaid().getMonth() == month)
-                .collect(Collectors.groupingBy(Expense::getCategory, Collectors.reducing(BigDecimal.ZERO, Expense::getAmount, BigDecimal::add
-                        )
-                ))
-                .entrySet().stream()
-                .max(Map.Entry.comparingByValue())
-                .map(Map.Entry::getKey)
-                .orElse(null);
     }
 }

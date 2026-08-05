@@ -9,8 +9,8 @@ import java.util.List;
 
 @Service
 public class BudgetService {
-    BudgetRepository budgetRepository;
-    ExpenseRepository expenseRepository;
+    private final BudgetRepository budgetRepository;
+    private final ExpenseRepository expenseRepository;
 
     public BudgetService(BudgetRepository budgetRepository, ExpenseRepository expenseRepository) {
         this.budgetRepository = budgetRepository;
@@ -25,17 +25,44 @@ public class BudgetService {
         return budgetRepository.findById(id).orElseThrow(() -> new IllegalStateException("ID not found"));
     }
 
-    public List<Budget> getBudgetsByMonth(Month month) {
-        return getAllBudgets().stream()
+    public List<Budget> getBudgetsByMonth(Long accountId, Month month) {
+        return budgetRepository.findByAccountId(accountId).stream()
                 .filter(budget -> budget.getBudgetMonth() == month)
                 .toList();
     }
 
-    public BigDecimal monthlyBudget(Month month) {
-        return getAllBudgets().stream()
+    public BigDecimal getMonthlyBudget(Long accountId, Month month) {
+        return budgetRepository.findByAccountId(accountId).stream()
                 .filter(budget -> budget.getBudgetMonth() == month)
                 .map(Budget::getBudgetTotal)
                 .reduce(BigDecimal.ZERO, BigDecimal::add);
+    }
+
+    public List<Budget> getOverspentBudgets(Long accountId, Month month) {
+        List<Budget> budgets = budgetRepository.findByAccountId(accountId);
+        List<Expense> expenses = expenseRepository.findByAccountId(accountId);
+        List<Budget> overspent = new ArrayList<>();
+
+        BigDecimal totalSpent;
+
+        for (Budget budget : budgets) {
+            if (budget.getBudgetMonth() != month) {
+                continue;
+            }
+
+            totalSpent = BigDecimal.ZERO;
+
+            for (Expense expense : expenses) {
+                if (expense.getDatePaid().getMonth() == month && expense.getCategory() == budget.getBudgetCategory()) {
+                    totalSpent = totalSpent.add(expense.getAmount());
+                }
+            }
+
+            if (totalSpent.compareTo(budget.getBudgetTotal()) > 0) {
+                overspent.add(budget);
+            }
+        }
+        return overspent;
     }
 
     public void addBudget(Budget budget) {
@@ -62,33 +89,5 @@ public class BudgetService {
 
     public void deleteBudget(Long id) {
         budgetRepository.deleteById(id);
-    }
-
-    public List<Budget> overSpentBudgets(Month month) {
-        List<Budget> budgets = budgetRepository.findAll();
-        List<Expense> expenses = expenseRepository.findAll();
-        List<Budget> overspent = new ArrayList<>();
-
-        BigDecimal totalSpent;
-
-        for (Budget budget : budgets) {
-            if (budget.getBudgetMonth() != month) {
-                continue;
-            }
-
-            totalSpent = BigDecimal.ZERO;
-
-            for (Expense expense : expenses) {
-                if (expense.getDatePaid().getMonth() == month && expense.getCategory() == budget.getBudgetCategory()) {
-                    totalSpent = totalSpent.add(expense.getAmount());
-                }
-            }
-
-            if (totalSpent.compareTo(budget.getBudgetTarget()) > 0) {
-                overspent.add(budget);
-            }
-        }
-
-        return overspent;
     }
 }

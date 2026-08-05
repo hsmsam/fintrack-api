@@ -6,7 +6,7 @@ import java.util.List;
 
 @Service
 public class AccountService {
-    AccountRepository accountRepository;
+    private final AccountRepository accountRepository;
 
     public AccountService(AccountRepository accountRepository) {
         this.accountRepository = accountRepository;
@@ -37,7 +37,7 @@ public class AccountService {
             accountExist.setEmail(account.getEmail());
         }
 
-
+        accountRepository.save(accountExist);
     }
 
     public void deleteAccount(Long id) {
