@@ -1,4 +1,4 @@
-package com.project.fintrackapi;
+package com.project.fintrackapi.enums;
 
 public enum Category {
     HOUSING,

@@ -1,9 +1,13 @@
-package com.project.fintrackapi;
+package com.project.fintrackapi.service;
 
+import com.project.fintrackapi.entity.Budget;
+import com.project.fintrackapi.entity.Expense;
+import com.project.fintrackapi.repository.BudgetRepository;
+import com.project.fintrackapi.repository.ExpenseRepository;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
-import java.time.Month;
+import java.time.YearMonth;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -25,20 +29,20 @@ public class BudgetService {
         return budgetRepository.findById(id).orElseThrow(() -> new IllegalStateException("ID not found"));
     }
 
-    public List<Budget> getBudgetsByMonth(Long accountId, Month month) {
+    public List<Budget> getBudgetsByMonth(Long accountId, YearMonth yearMonth) {
         return budgetRepository.findByAccountId(accountId).stream()
-                .filter(budget -> budget.getBudgetMonth() == month)
+                .filter(budget -> YearMonth.from(budget.getBudgetMonth()).equals(yearMonth))
                 .toList();
     }
 
-    public BigDecimal getMonthlyBudget(Long accountId, Month month) {
+    public BigDecimal getMonthlyBudget(Long accountId, YearMonth yearMonth) {
         return budgetRepository.findByAccountId(accountId).stream()
-                .filter(budget -> budget.getBudgetMonth() == month)
+                .filter(budget -> YearMonth.from(budget.getBudgetMonth()).equals(yearMonth))
                 .map(Budget::getBudgetTotal)
                 .reduce(BigDecimal.ZERO, BigDecimal::add);
     }
 
-    public List<Budget> getOverspentBudgets(Long accountId, Month month) {
+    public List<Budget> getOverspentBudgets(Long accountId, YearMonth yearMonth) {
         List<Budget> budgets = budgetRepository.findByAccountId(accountId);
         List<Expense> expenses = expenseRepository.findByAccountId(accountId);
         List<Budget> overspent = new ArrayList<>();
@@ -46,14 +50,14 @@ public class BudgetService {
         BigDecimal totalSpent;
 
         for (Budget budget : budgets) {
-            if (budget.getBudgetMonth() != month) {
+            if (!budget.getBudgetMonth().equals(yearMonth)) {
                 continue;
             }
 
             totalSpent = BigDecimal.ZERO;
 
             for (Expense expense : expenses) {
-                if (expense.getDatePaid().getMonth() == month && expense.getCategory() == budget.getBudgetCategory()) {
+                if (YearMonth.from(expense.getDatePaid()).equals(yearMonth) && expense.getCategory() == budget.getBudgetCategory()) {
                     totalSpent = totalSpent.add(expense.getAmount());
                 }
             }

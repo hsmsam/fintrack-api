@@ -1,9 +1,11 @@
-package com.project.fintrackapi;
+package com.project.fintrackapi.controller;
 
+import com.project.fintrackapi.service.IncomeService;
+import com.project.fintrackapi.entity.Income;
 import org.springframework.web.bind.annotation.*;
 
 import java.math.BigDecimal;
-import java.time.Month;
+import java.time.YearMonth;
 import java.util.List;
 
 @RestController
@@ -25,9 +27,9 @@ public class IncomeController {
         return incomeService.getIncomeById(id);
     }
 
-    @GetMapping("total-income/{id}/{month}")
-    public BigDecimal getTotalIncomeThisMonth(@PathVariable Long id, @PathVariable Month month) {
-        return incomeService.getTotalIncomeThisMonth(id, month);
+    @GetMapping("total-income/{id}/{yearMonth}")
+    public BigDecimal getTotalIncomeThisMonth(@PathVariable Long id, @PathVariable YearMonth yearMonth) {
+        return incomeService.getTotalIncomeThisMonth(id, yearMonth);
     }
 
     @PostMapping

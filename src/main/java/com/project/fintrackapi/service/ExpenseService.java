@@ -1,9 +1,12 @@
-package com.project.fintrackapi;
+package com.project.fintrackapi.service;
 
+import com.project.fintrackapi.enums.Category;
+import com.project.fintrackapi.entity.Expense;
+import com.project.fintrackapi.repository.ExpenseRepository;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
-import java.time.Month;
+import java.time.YearMonth;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
@@ -30,23 +33,23 @@ public class ExpenseService {
         return expenseRepository.findByAccountId(id);
     }
 
-    public BigDecimal getTotalSpentThisMonth(Long accountId, Month month) {
+    public BigDecimal getTotalSpentThisMonth(Long accountId, YearMonth yearMonth) {
         return expenseRepository.findByAccountId(accountId).stream()
-                .filter(expense -> expense.getDatePaid().getMonth() == month)
+                .filter(expense -> YearMonth.from(expense.getDatePaid()).equals(yearMonth))
                 .map(Expense::getAmount)
                 .reduce(BigDecimal.ZERO, BigDecimal::add);
     }
 
-    public Expense getLargestExpense(Long accountId, Month month) {
+    public Expense getLargestExpense(Long accountId, YearMonth yearMonth) {
         return expenseRepository.findByAccountId(accountId).stream()
-                .filter(Expense -> Expense.getDatePaid().getMonth() == month)
+                .filter(Expense -> YearMonth.from(Expense.getDatePaid()).equals(yearMonth))
                 .max(Comparator.comparing(Expense::getAmount))
                 .orElse(null);
     }
 
-    public Category getlargestSpendingCategory(Long accountId, Month month) {
+    public Category getLargestSpendingCategory(Long accountId, YearMonth yearMonth) {
         return expenseRepository.findByAccountId(accountId).stream()
-                .filter(expense -> expense.getDatePaid().getMonth() == month)
+                .filter(expense -> YearMonth.from(expense.getDatePaid()).equals(yearMonth))
                 .collect(Collectors.groupingBy(Expense::getCategory, Collectors.reducing(BigDecimal.ZERO, Expense::getAmount, BigDecimal::add
                         )
                 ))

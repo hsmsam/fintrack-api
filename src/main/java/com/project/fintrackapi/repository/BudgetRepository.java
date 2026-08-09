@@ -1,5 +1,6 @@
-package com.project.fintrackapi;
+package com.project.fintrackapi.repository;
 
+import com.project.fintrackapi.entity.Budget;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;

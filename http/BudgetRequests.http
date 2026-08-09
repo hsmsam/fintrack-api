@@ -9,13 +9,13 @@ GET http://localhost:8080/api/v1/budget
 GET http://localhost:8080/api/v1/budget/1
 
 ###
-GET http://localhost:8080/api/v1/budget/1/MARCH
+GET http://localhost:8080/api/v1/budget/1/2026-03
 
 ###
-GET http://localhost:8080/api/v1/budget/monthly-budget/1/MARCH
+GET http://localhost:8080/api/v1/budget/monthly-budget/1/2026-03
 
 ###
-GET http://localhost:8080/api/v1/budget/overspent-budgets/1/MARCH
+GET http://localhost:8080/api/v1/budget/overspent-budgets/1/2026-03
 
 ###
 POST http://localhost:8080/api/v1/budget
@@ -25,9 +25,9 @@ Content-Type: application/json
   "account": {
     "id": 1
   },
-  "budgetCategory": "LEISURE",
-  "budgetTotal": "200",
-  "budgetMonth": "MARCH"
+  "budgetCategory": "SUBSCRIPTIONS",
+  "budgetTotal": "130",
+  "budgetMonth": "2026-03"
 }
 
 ###

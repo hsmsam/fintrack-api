@@ -1,9 +1,10 @@
-package com.project.fintrackapi;
+package com.project.fintrackapi.entity;
 
+import com.project.fintrackapi.enums.Category;
 import jakarta.persistence.*;
 
 import java.math.BigDecimal;
-import java.time.Month;
+import java.time.YearMonth;
 import java.util.Objects;
 
 @Entity
@@ -17,13 +18,13 @@ public class Budget {
     @Enumerated(EnumType.STRING)
     private Category budgetCategory;
     private BigDecimal budgetTotal;
-    private java.time.Month budgetMonth;
+    private java.time.YearMonth budgetMonth;
 
     public Budget() {
 
     }
 
-    public Budget(Category budgetCategory, BigDecimal budgetTotal, Month budgetMonth) {
+    public Budget(Category budgetCategory, BigDecimal budgetTotal, YearMonth budgetMonth) {
         this.budgetCategory = budgetCategory;
         this.budgetTotal = budgetTotal;
         this.budgetMonth = budgetMonth;
@@ -61,11 +62,11 @@ public class Budget {
         this.budgetTotal = budgetTotal;
     }
 
-    public Month getBudgetMonth() {
+    public YearMonth getBudgetMonth() {
         return budgetMonth;
     }
 
-    public void setBudgetMonth(Month budgetMonth) {
+    public void setBudgetMonth(YearMonth budgetMonth) {
         this.budgetMonth = budgetMonth;
     }
 

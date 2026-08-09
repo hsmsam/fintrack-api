@@ -1,9 +1,11 @@
-package com.project.fintrackapi;
+package com.project.fintrackapi.controller;
 
+import com.project.fintrackapi.service.BudgetService;
+import com.project.fintrackapi.entity.Budget;
 import org.springframework.web.bind.annotation.*;
 
 import java.math.BigDecimal;
-import java.time.Month;
+import java.time.YearMonth;
 import java.util.List;
 
 @RestController
@@ -25,19 +27,19 @@ public class BudgetController {
         return budgetService.getBudgetById(id);
     }
 
-    @GetMapping("{id}/{month}")
-    public List<Budget> getBudgetsByMonth(@PathVariable Long id, @PathVariable Month month) {
-        return budgetService.getBudgetsByMonth(id, month);
+    @GetMapping("{id}/{yearMonth}")
+    public List<Budget> getBudgetsByMonth(@PathVariable Long id, @PathVariable YearMonth yearMonth) {
+        return budgetService.getBudgetsByMonth(id, yearMonth);
     }
 
-    @GetMapping("/monthly-budget/{id}/{month}")
-    public BigDecimal getMonthlyBudget(@PathVariable Long id, @PathVariable Month month) {
-        return budgetService.getMonthlyBudget(id, month);
+    @GetMapping("/monthly-budget/{id}/{yearMonth}")
+    public BigDecimal getMonthlyBudget(@PathVariable Long id, @PathVariable YearMonth yearMonth) {
+        return budgetService.getMonthlyBudget(id, yearMonth);
     }
 
-    @GetMapping("/overspent-budgets/{id}/{month}")
-    public List<Budget> getOverspentBudgets(@PathVariable Long id, @PathVariable Month month) {
-        return budgetService.getOverspentBudgets(id, month);
+    @GetMapping("/overspent-budgets/{id}/{yearMonth}")
+    public List<Budget> getOverspentBudgets(@PathVariable Long id, @PathVariable YearMonth yearMonth) {
+        return budgetService.getOverspentBudgets(id, yearMonth);
     }
 
     @PostMapping

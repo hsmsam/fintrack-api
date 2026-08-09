@@ -1,4 +1,6 @@
-package com.project.fintrackapi;
+package com.project.fintrackapi.entity;
+
+import com.project.fintrackapi.enums.Category;
 
 import java.math.BigDecimal;
 import java.util.List;

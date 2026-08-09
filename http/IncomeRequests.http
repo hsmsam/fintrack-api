@@ -16,11 +16,11 @@ Content-Type: application/json
   "account": {
     "id": "1"
   },
-  "amount": 2000,
-  "source": "Work",
-  "dateReceived": "2026-03-07",
+  "amount": 600,
+  "source": "Passive income",
+  "dateReceived": "2026-03-28",
   "frequency": "MONTHLY",
-  "description": "Monthly work wage "
+  "description": "Forex trading"
 }
 
 ###

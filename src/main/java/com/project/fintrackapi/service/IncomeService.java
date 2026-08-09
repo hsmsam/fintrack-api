@@ -1,9 +1,11 @@
-package com.project.fintrackapi;
+package com.project.fintrackapi.service;
 
+import com.project.fintrackapi.entity.Income;
+import com.project.fintrackapi.repository.IncomeRepository;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
-import java.time.Month;
+import java.time.YearMonth;
 import java.util.List;
 
 @Service
@@ -27,9 +29,9 @@ public class IncomeService {
         return incomeRepository.findByAccountId(id);
     }
 
-    public BigDecimal getTotalIncomeThisMonth(Long id, Month month) {
+    public BigDecimal getTotalIncomeThisMonth(Long id, YearMonth yearMonth) {
         return getIncomeByAccountId(id).stream()
-                .filter(expense -> expense.getDateReceived().getMonth() == month)
+                .filter(expense -> YearMonth.from(expense.getDateReceived()).equals(yearMonth))
                 .map(Income::getAmount)
                 .reduce(BigDecimal.ZERO, BigDecimal::add);
     }

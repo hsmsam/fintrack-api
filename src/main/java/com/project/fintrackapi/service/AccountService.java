@@ -1,5 +1,7 @@
-package com.project.fintrackapi;
+package com.project.fintrackapi.service;
 
+import com.project.fintrackapi.entity.Account;
+import com.project.fintrackapi.repository.AccountRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.List;

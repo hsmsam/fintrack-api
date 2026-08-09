@@ -1,4 +1,4 @@
-package com.project.fintrackapi;
+package com.project.fintrackapi.entity;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;

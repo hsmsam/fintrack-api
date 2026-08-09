@@ -1,9 +1,12 @@
-package com.project.fintrackapi;
+package com.project.fintrackapi.controller;
 
+import com.project.fintrackapi.enums.Category;
+import com.project.fintrackapi.service.ExpenseService;
+import com.project.fintrackapi.entity.Expense;
 import org.springframework.web.bind.annotation.*;
 
 import java.math.BigDecimal;
-import java.time.Month;
+import java.time.YearMonth;
 import java.util.List;
 
 @RestController
@@ -25,19 +28,19 @@ public class ExpenseController {
         return expenseService.getExpenseById(id);
     }
 
-    @GetMapping("total-spent/{id}/{month}")
-    public BigDecimal getTotalSpentThisMonth(@PathVariable Long id, @PathVariable Month month) {
-        return expenseService.getTotalSpentThisMonth(id, month);
+    @GetMapping("total-spent/{id}/{yearMonth}")
+    public BigDecimal getTotalSpentThisMonth(@PathVariable Long id, @PathVariable YearMonth yearMonth) {
+        return expenseService.getTotalSpentThisMonth(id, yearMonth);
     }
 
-    @GetMapping("/largest-expense/{id}/{month}")
-    public Expense getLargestExpense(@PathVariable Long id, @PathVariable Month month) {
-        return expenseService.getLargestExpense(id, month);
+    @GetMapping("/largest-expense/{id}/{yearMonth}")
+    public Expense getLargestExpense(@PathVariable Long id, @PathVariable YearMonth yearMonth) {
+        return expenseService.getLargestExpense(id, yearMonth);
     }
 
-    @GetMapping("/largest-spending-category/{id}/{month}")
-    public Category getlargestSpendingCategory(@PathVariable Long id, @PathVariable Month month) {
-        return expenseService.getlargestSpendingCategory(id, month);
+    @GetMapping("/largest-spending-category/{id}/{yearMonth}")
+    public Category getLargestSpendingCategory(@PathVariable Long id, @PathVariable YearMonth yearMonth) {
+        return expenseService.getLargestSpendingCategory(id, yearMonth);
     }
 
     @PostMapping
