@@ -2,6 +2,7 @@ package com.project.fintrackapi.service;
 
 import com.project.fintrackapi.entity.Budget;
 import com.project.fintrackapi.entity.Expense;
+import com.project.fintrackapi.exception.ResourceNotFoundException;
 import com.project.fintrackapi.repository.BudgetRepository;
 import com.project.fintrackapi.repository.ExpenseRepository;
 import org.springframework.stereotype.Service;
@@ -26,7 +27,7 @@ public class BudgetService {
     }
 
     public Budget getBudgetById(Long id) {
-        return budgetRepository.findById(id).orElseThrow(() -> new IllegalStateException("ID not found"));
+        return budgetRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Account not found with ID " + id));
     }
 
     public List<Budget> getBudgetsByMonth(Long accountId, YearMonth yearMonth) {
@@ -74,7 +75,7 @@ public class BudgetService {
     }
 
     public void updateBudget(Long id, Budget budget) {
-        Budget budgetExist = budgetRepository.findById(id).orElseThrow(() -> new IllegalStateException("ID not found"));
+        Budget budgetExist = budgetRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Account not found with ID " + id));
 
         if (budget.getBudgetCategory() != null) {
             budgetExist.setBudgetCategory(budget.getBudgetCategory());

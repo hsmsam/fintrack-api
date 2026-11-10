@@ -25,11 +25,11 @@ Content-Type: application/json
   "account": {
     "id": 1
   },
-  "amount": 100,
-  "category": "SUBSCRIPTIONS",
-  "datePaid": "2026-03-17",
+  "amount": 150,
+  "category": "LEISURE",
+  "datePaid": "2027-03-10",
   "frequency": "MONTHLY",
-  "description": "Phone contract and other subscriptions Netflix etc"
+  "description": "Going out doing activities and getting food"
 }
 
 ###

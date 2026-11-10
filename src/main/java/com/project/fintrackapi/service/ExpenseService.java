@@ -2,6 +2,7 @@ package com.project.fintrackapi.service;
 
 import com.project.fintrackapi.enums.Category;
 import com.project.fintrackapi.entity.Expense;
+import com.project.fintrackapi.exception.ResourceNotFoundException;
 import com.project.fintrackapi.repository.ExpenseRepository;
 import org.springframework.stereotype.Service;
 
@@ -26,7 +27,7 @@ public class ExpenseService {
 
     public Expense getExpenseById(Long id) {
         return expenseRepository.findById(id)
-                .orElseThrow(() -> new IllegalStateException("ID not found"));
+                .orElseThrow(() -> new ResourceNotFoundException("Account not found with ID " + id));
     }
 
     public List<Expense> getExpenseByAccountId(Long id) {
@@ -65,7 +66,7 @@ public class ExpenseService {
 
     public void updateExpense(Long id, Expense expense) {
         Expense expenseExist = expenseRepository.findById(id)
-                .orElseThrow(() -> new IllegalStateException("ID not found"));
+                .orElseThrow(() -> new ResourceNotFoundException("Account not found with ID " + id));
 
         if (expense.getAmount() != null) {
             expenseExist.setAmount(expense.getAmount());

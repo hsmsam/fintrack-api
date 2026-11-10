@@ -1,6 +1,7 @@
 package com.project.fintrackapi.service;
 
 import com.project.fintrackapi.entity.Account;
+import com.project.fintrackapi.exception.ResourceNotFoundException;
 import com.project.fintrackapi.repository.AccountRepository;
 import org.springframework.stereotype.Service;
 
@@ -20,7 +21,7 @@ public class AccountService {
 
     public Account getAccountById(Long id) {
         return accountRepository.findById(id)
-                .orElseThrow(() -> new IllegalStateException("ID not found"));
+                .orElseThrow(() -> new ResourceNotFoundException("Account not found with ID " + id));
     }
 
     public void addAccount(Account account) {
@@ -29,7 +30,7 @@ public class AccountService {
 
     public void updateAccount(Long id, Account account) {
         Account accountExist = accountRepository.findById(id)
-                .orElseThrow(() -> new IllegalStateException("ID not found"));
+                .orElseThrow(() -> new ResourceNotFoundException("Account not found with ID " + id));
 
         if (account.getName() != null) {
             accountExist.setName(account.getName());

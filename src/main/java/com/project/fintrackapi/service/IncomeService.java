@@ -1,6 +1,7 @@
 package com.project.fintrackapi.service;
 
 import com.project.fintrackapi.entity.Income;
+import com.project.fintrackapi.exception.ResourceNotFoundException;
 import com.project.fintrackapi.repository.IncomeRepository;
 import org.springframework.stereotype.Service;
 
@@ -22,7 +23,7 @@ public class IncomeService {
 
     public Income getIncomeById(Long id) {
         return incomeRepository.findById(id)
-                .orElseThrow(() -> new IllegalStateException("ID not found"));
+                .orElseThrow(() -> new ResourceNotFoundException("Account not found with ID " + id));
     }
 
     public List<Income> getIncomeByAccountId(Long id) {
@@ -42,7 +43,7 @@ public class IncomeService {
 
     public void updateIncome(Long id, Income income) {
         Income incomeExists = incomeRepository.findById(id)
-                .orElseThrow(() -> new IllegalStateException("ID not found"));
+                .orElseThrow(() -> new ResourceNotFoundException("Account not found with ID " + id));
 
         if (income.getAmount() != null) {
             incomeExists.setAmount(income.getAmount());
