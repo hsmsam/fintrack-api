@@ -3,6 +3,7 @@ package com.project.fintrackapi.controller;
 import com.project.fintrackapi.enums.Category;
 import com.project.fintrackapi.service.ExpenseService;
 import com.project.fintrackapi.entity.Expense;
+import jakarta.validation.Valid;
 import org.springframework.web.bind.annotation.*;
 
 import java.math.BigDecimal;
@@ -44,7 +45,7 @@ public class ExpenseController {
     }
 
     @PostMapping
-    public void addExpense(@RequestBody Expense expense) {
+    public void addExpense(@Valid @RequestBody Expense expense) {
         expenseService.addExpense(expense);
     }
 

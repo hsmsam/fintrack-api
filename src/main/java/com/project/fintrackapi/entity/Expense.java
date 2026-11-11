@@ -3,6 +3,7 @@ package com.project.fintrackapi.entity;
 import com.project.fintrackapi.enums.Category;
 import com.project.fintrackapi.enums.Frequency;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.Positive;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
@@ -16,6 +17,7 @@ public class Expense {
     @ManyToOne
     @JoinColumn(name = "account_id")
     private Account account;
+    @Positive(message = "Expense amount must be greater than zero")
     private BigDecimal amount;
     @Enumerated(EnumType.STRING)
     private Category category;
