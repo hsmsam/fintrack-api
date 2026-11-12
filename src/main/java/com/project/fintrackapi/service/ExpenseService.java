@@ -4,7 +4,6 @@ import com.project.fintrackapi.enums.Category;
 import com.project.fintrackapi.entity.Expense;
 import com.project.fintrackapi.exception.ResourceNotFoundException;
 import com.project.fintrackapi.repository.ExpenseRepository;
-import jakarta.validation.constraints.Positive;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;

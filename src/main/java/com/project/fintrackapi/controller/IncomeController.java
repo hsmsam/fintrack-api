@@ -2,6 +2,7 @@ package com.project.fintrackapi.controller;
 
 import com.project.fintrackapi.service.IncomeService;
 import com.project.fintrackapi.entity.Income;
+import jakarta.validation.Valid;
 import org.springframework.web.bind.annotation.*;
 
 import java.math.BigDecimal;
@@ -27,18 +28,18 @@ public class IncomeController {
         return incomeService.getIncomeById(id);
     }
 
-    @GetMapping("total-income/{id}/{yearMonth}")
-    public BigDecimal getTotalIncomeThisMonth(@PathVariable Long id, @PathVariable YearMonth yearMonth) {
-        return incomeService.getTotalIncomeThisMonth(id, yearMonth);
+    @GetMapping("total-income/{accountId}/{yearMonth}")
+    public BigDecimal getTotalIncomeThisMonth(@PathVariable Long accountId, @PathVariable YearMonth yearMonth) {
+        return incomeService.getTotalIncomeThisMonth(accountId, yearMonth);
     }
 
     @PostMapping
-    public void addIncome(@RequestBody Income income) {
+    public void addIncome(@Valid @RequestBody Income income) {
         incomeService.addIncome(income);
     }
 
     @PutMapping("{id}")
-    public void updateIncome(@PathVariable Long id, @RequestBody Income income) {
+    public void updateIncome(@PathVariable Long id, @Valid @RequestBody Income income) {
         incomeService.updateIncome(id, income);
     }
 

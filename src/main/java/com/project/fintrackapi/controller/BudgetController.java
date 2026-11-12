@@ -2,6 +2,7 @@ package com.project.fintrackapi.controller;
 
 import com.project.fintrackapi.service.BudgetService;
 import com.project.fintrackapi.entity.Budget;
+import jakarta.validation.Valid;
 import org.springframework.web.bind.annotation.*;
 
 import java.math.BigDecimal;
@@ -27,28 +28,28 @@ public class BudgetController {
         return budgetService.getBudgetById(id);
     }
 
-    @GetMapping("{id}/{yearMonth}")
-    public List<Budget> getBudgetsByMonth(@PathVariable Long id, @PathVariable YearMonth yearMonth) {
-        return budgetService.getBudgetsByMonth(id, yearMonth);
+    @GetMapping("{accountId}/{yearMonth}")
+    public List<Budget> getBudgetsByMonth(@PathVariable Long accountId, @PathVariable YearMonth yearMonth) {
+        return budgetService.getBudgetsByMonth(accountId, yearMonth);
     }
 
-    @GetMapping("/monthly-budget/{id}/{yearMonth}")
-    public BigDecimal getMonthlyBudget(@PathVariable Long id, @PathVariable YearMonth yearMonth) {
-        return budgetService.getMonthlyBudget(id, yearMonth);
+    @GetMapping("/monthly-budget/{accountId}/{yearMonth}")
+    public BigDecimal getMonthlyBudget(@PathVariable Long accountId, @PathVariable YearMonth yearMonth) {
+        return budgetService.getMonthlyBudget(accountId, yearMonth);
     }
 
-    @GetMapping("/overspent-budgets/{id}/{yearMonth}")
-    public List<Budget> getOverspentBudgets(@PathVariable Long id, @PathVariable YearMonth yearMonth) {
-        return budgetService.getOverspentBudgets(id, yearMonth);
+    @GetMapping("/overspent-budgets/{accountId}/{yearMonth}")
+    public List<Budget> getOverspentBudgets(@PathVariable Long accountId, @PathVariable YearMonth yearMonth) {
+        return budgetService.getOverspentBudgets(accountId, yearMonth);
     }
 
     @PostMapping
-    public void addBudget(@RequestBody Budget budget) {
+    public void addBudget(@Valid @RequestBody Budget budget) {
         budgetService.addBudget(budget);
     }
 
     @PutMapping("{id}")
-    public void updateBudget(@PathVariable Long id, @RequestBody Budget budget) {
+    public void updateBudget(@PathVariable Long id, @Valid @RequestBody Budget budget) {
         budgetService.updateBudget(id, budget);
     }
 

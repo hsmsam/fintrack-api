@@ -2,6 +2,7 @@ package com.project.fintrackapi.controller;
 
 import com.project.fintrackapi.service.AccountService;
 import com.project.fintrackapi.entity.Account;
+import jakarta.validation.Valid;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -25,14 +26,14 @@ public class AccountController {
         return accountService.getAccountById(id);
     }
 
-    @PutMapping("{id}")
-    public void updateAccount(@PathVariable Long id, @RequestBody Account account) {
-        accountService.updateAccount(id, account);
+    @PostMapping
+    public void addAccount(@Valid @RequestBody Account account) {
+        accountService.addAccount(account);
     }
 
-    @PostMapping
-    public void addAccount(@RequestBody Account account) {
-        accountService.addAccount(account);
+    @PutMapping("{id}")
+    public void updateAccount(@PathVariable Long id, @Valid @RequestBody Account account) {
+        accountService.updateAccount(id, account);
     }
 
     @DeleteMapping("{id}")

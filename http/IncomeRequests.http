@@ -16,7 +16,7 @@ Content-Type: application/json
   "account": {
     "id": "1"
   },
-  "amount": 2000,
+  "amount": ,
   "source": "Work",
   "dateReceived": "2027-03-03",
   "frequency": "MONTHLY",

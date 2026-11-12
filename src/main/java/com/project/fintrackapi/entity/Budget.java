@@ -2,6 +2,8 @@ package com.project.fintrackapi.entity;
 
 import com.project.fintrackapi.enums.Category;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Positive;
 
 import java.math.BigDecimal;
 import java.time.YearMonth;
@@ -13,12 +15,17 @@ public class Budget {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     @ManyToOne
-    @JoinColumn(name = "account_id")
+    @JoinColumn(name = "account_id", nullable = false)
+    @NotNull(message = "Budget must have and belong to an account")
     private Account account;
     @Enumerated(EnumType.STRING)
+    @NotNull(message = "Budget must have a category")
     private Category budgetCategory;
+    @Positive(message = "Budget total must be greater than zero")
+    @NotNull(message = "Budget total must have a value")
     private BigDecimal budgetTotal;
-    private java.time.YearMonth budgetMonth;
+    @NotNull(message = "Budget must have a month")
+    private YearMonth budgetMonth;
 
     public Budget() {
 
@@ -74,7 +81,7 @@ public class Budget {
     public boolean equals(Object object) {
         if (object == null || getClass() != object.getClass()) return false;
         Budget budget = (Budget) object;
-        return Objects.equals(id, budget.id) && Objects.equals(account, budget.account) && budgetCategory == budget.budgetCategory && Objects.equals(budgetTotal, budget.budgetTotal) && budgetMonth == budget.budgetMonth;
+        return Objects.equals(id, budget.id) && Objects.equals(account, budget.account) && budgetCategory == budget.budgetCategory && Objects.equals(budgetTotal, budget.budgetTotal) && Objects.equals(budgetMonth, budget.budgetMonth);
     }
 
     @Override

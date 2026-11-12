@@ -3,6 +3,7 @@ package com.project.fintrackapi.entity;
 import com.project.fintrackapi.enums.Category;
 import com.project.fintrackapi.enums.Frequency;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
 
 import java.math.BigDecimal;
@@ -15,14 +16,19 @@ public class Expense {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     @ManyToOne
-    @JoinColumn(name = "account_id")
+    @JoinColumn(name = "account_id", nullable = false)
+    @NotNull(message = "Expense must have and belong to an account")
     private Account account;
     @Positive(message = "Expense amount must be greater than zero")
+    @NotNull(message = "Expense must have a value")
     private BigDecimal amount;
     @Enumerated(EnumType.STRING)
+    @NotNull(message = "Expense must have a category")
     private Category category;
+    @NotNull(message = "Expense must have a date for when it's paid")
     private LocalDate datePaid;
     @Enumerated(EnumType.STRING)
+    @NotNull(message = "Expense must include a frequency")
     private Frequency frequency;
     private String description;
 
