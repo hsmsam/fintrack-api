@@ -13,10 +13,8 @@ POST http://localhost:8080/api/v1/income
 Content-Type: application/json
 
 {
-  "account": {
-    "id": "1"
-  },
-  "amount": ,
+  "accountId": 1,
+  "amount": 2000,
   "source": "Work",
   "dateReceived": "2027-03-03",
   "frequency": "MONTHLY",
@@ -28,7 +26,11 @@ PUT http://localhost:8080/api/v1/income/1
 Content-Type: application/json
 
 {
-  "frequency": "WEEKLY"
+  "amount": 2200,
+  "source": "Work",
+  "dateReceived": "2027-03-03",
+  "frequency": "WEEKLY",
+  "description": "Updated wage"
 }
 
 ###

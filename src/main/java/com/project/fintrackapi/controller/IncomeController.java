@@ -1,5 +1,7 @@
 package com.project.fintrackapi.controller;
 
+import com.project.fintrackapi.dto.CreateIncomeRequest;
+import com.project.fintrackapi.dto.UpdateIncomeRequest;
 import com.project.fintrackapi.service.IncomeService;
 import com.project.fintrackapi.entity.Income;
 import jakarta.validation.Valid;
@@ -34,13 +36,13 @@ public class IncomeController {
     }
 
     @PostMapping
-    public void addIncome(@Valid @RequestBody Income income) {
-        incomeService.addIncome(income);
+    public void addIncome(@Valid @RequestBody CreateIncomeRequest request) {
+        incomeService.addIncome(request);
     }
 
     @PutMapping("{id}")
-    public void updateIncome(@PathVariable Long id, @Valid @RequestBody Income income) {
-        incomeService.updateIncome(id, income);
+    public void updateIncome(@PathVariable Long id, @Valid @RequestBody UpdateIncomeRequest request) {
+        incomeService.updateIncome(id, request);
     }
 
     @DeleteMapping("{id}")

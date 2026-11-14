@@ -1,7 +1,11 @@
 package com.project.fintrackapi.service;
 
+import com.project.fintrackapi.dto.CreateIncomeRequest;
+import com.project.fintrackapi.dto.UpdateIncomeRequest;
+import com.project.fintrackapi.entity.Account;
 import com.project.fintrackapi.entity.Income;
 import com.project.fintrackapi.exception.ResourceNotFoundException;
+import com.project.fintrackapi.repository.AccountRepository;
 import com.project.fintrackapi.repository.IncomeRepository;
 import org.springframework.stereotype.Service;
 
@@ -12,9 +16,11 @@ import java.util.List;
 @Service
 public class IncomeService {
     private final IncomeRepository incomeRepository;
+    private final AccountRepository accountRepository;
 
-    public IncomeService(IncomeRepository incomeRepository) {
+    public IncomeService(IncomeRepository incomeRepository, AccountRepository accountRepository) {
         this.incomeRepository = incomeRepository;
+        this.accountRepository = accountRepository;
     }
 
     public List<Income> getAllIncomes() {
@@ -23,7 +29,7 @@ public class IncomeService {
 
     public Income getIncomeById(Long id) {
         return incomeRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("Account not found with ID " + id));
+                .orElseThrow(() -> new ResourceNotFoundException("Income with ID " + id + " not found"));
     }
 
     public List<Income> getIncomeByAccountId(Long id) {
@@ -32,43 +38,38 @@ public class IncomeService {
 
     public BigDecimal getTotalIncomeThisMonth(Long id, YearMonth yearMonth) {
         return getIncomeByAccountId(id).stream()
-                .filter(expense -> YearMonth.from(expense.getDateReceived()).equals(yearMonth))
+                .filter(income -> YearMonth.from(income.getDateReceived()).equals(yearMonth))
                 .map(Income::getAmount)
                 .reduce(BigDecimal.ZERO, BigDecimal::add);
     }
 
-    public void addIncome(Income income) {
+    public void addIncome(CreateIncomeRequest request) {
+        Account account = accountRepository.findById(request.accountId())
+                .orElseThrow(() -> new ResourceNotFoundException("Income with ID " + request.accountId() + " not found"));
+
+        Income income = new Income(request.amount(), request.source(), request.dateReceived(), request.frequency(), request.description());
+        income.setAccount(account);
+
         incomeRepository.save(income);
     }
 
-    public void updateIncome(Long id, Income income) {
-        Income incomeExists = incomeRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("Account not found with ID " + id));
+    public void updateIncome(Long id, UpdateIncomeRequest request) {
+        Income income = incomeRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Income with ID " + id + " not found"));
 
-        if (income.getAmount() != null) {
-            incomeExists.setAmount(income.getAmount());
-        }
+        income.setAmount(request.amount());
+        income.setSource(request.source());
+        income.setDateReceived(request.dateReceived());
+        income.setFrequency(request.frequency());
+        income.setDescription(request.description());
 
-        if (income.getSource() != null) {
-            incomeExists.setSource(income.getSource());
-        }
-
-        if (income.getDateReceived() != null) {
-            incomeExists.setDateReceived(income.getDateReceived());
-        }
-
-        if (income.getFrequency() != null) {
-            incomeExists.setFrequency(income.getFrequency());
-        }
-
-        if (income.getDescription() != null) {
-            incomeExists.setDescription(income.getDescription());
-        }
-
-        incomeRepository.save(incomeExists);
+        incomeRepository.save(income);
     }
 
     public void deleteIncome(Long id) {
+        if (!incomeRepository.existsById(id)) {
+            throw new ResourceNotFoundException("Income with ID " + id + " not found");
+        }
         incomeRepository.deleteById(id);
     }
 }
