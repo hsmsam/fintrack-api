@@ -15,12 +15,12 @@ import java.util.List;
 
 @Service
 public class IncomeService {
-    private final IncomeRepository incomeRepository;
     private final AccountRepository accountRepository;
+    private final IncomeRepository incomeRepository;
 
-    public IncomeService(IncomeRepository incomeRepository, AccountRepository accountRepository) {
-        this.incomeRepository = incomeRepository;
+    public IncomeService(AccountRepository accountRepository, IncomeRepository incomeRepository) {
         this.accountRepository = accountRepository;
+        this.incomeRepository = incomeRepository;
     }
 
     public List<Income> getAllIncomes() {
@@ -45,7 +45,7 @@ public class IncomeService {
 
     public void addIncome(CreateIncomeRequest request) {
         Account account = accountRepository.findById(request.accountId())
-                .orElseThrow(() -> new ResourceNotFoundException("Income with ID " + request.accountId() + " not found"));
+                .orElseThrow(() -> new ResourceNotFoundException("Account with ID " + request.accountId() + " not found"));
 
         Income income = new Income(request.amount(), request.source(), request.dateReceived(), request.frequency(), request.description());
         income.setAccount(account);

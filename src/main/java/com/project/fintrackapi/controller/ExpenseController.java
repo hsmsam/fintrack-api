@@ -1,5 +1,7 @@
 package com.project.fintrackapi.controller;
 
+import com.project.fintrackapi.dto.CreateExpenseRequest;
+import com.project.fintrackapi.dto.UpdateExpenseRequest;
 import com.project.fintrackapi.enums.Category;
 import com.project.fintrackapi.service.ExpenseService;
 import com.project.fintrackapi.entity.Expense;
@@ -45,13 +47,13 @@ public class ExpenseController {
     }
 
     @PostMapping
-    public void addExpense(@Valid @RequestBody Expense expense) {
-        expenseService.addExpense(expense);
+    public void addExpense(@Valid @RequestBody CreateExpenseRequest request) {
+        expenseService.addExpense(request);
     }
 
     @PutMapping("{id}")
-    public void updateExpense(@PathVariable Long id, @Valid @RequestBody Expense expense) {
-        expenseService.updateExpense(id, expense);
+    public void updateExpense(@PathVariable Long id, @Valid @RequestBody UpdateExpenseRequest request) {
+        expenseService.updateExpense(id, request);
     }
 
     @DeleteMapping("{id}")
