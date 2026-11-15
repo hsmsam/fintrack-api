@@ -1,8 +1,12 @@
 package com.project.fintrackapi.service;
 
+import com.project.fintrackapi.dto.CreateBudgetRequest;
+import com.project.fintrackapi.dto.UpdateBudgetRequest;
+import com.project.fintrackapi.entity.Account;
 import com.project.fintrackapi.entity.Budget;
 import com.project.fintrackapi.entity.Expense;
 import com.project.fintrackapi.exception.ResourceNotFoundException;
+import com.project.fintrackapi.repository.AccountRepository;
 import com.project.fintrackapi.repository.BudgetRepository;
 import com.project.fintrackapi.repository.ExpenseRepository;
 import org.springframework.stereotype.Service;
@@ -14,10 +18,12 @@ import java.util.List;
 
 @Service
 public class BudgetService {
+    private final AccountRepository accountRepository;
     private final BudgetRepository budgetRepository;
     private final ExpenseRepository expenseRepository;
 
-    public BudgetService(BudgetRepository budgetRepository, ExpenseRepository expenseRepository) {
+    public BudgetService(AccountRepository accountRepository, BudgetRepository budgetRepository, ExpenseRepository expenseRepository) {
+        this.accountRepository = accountRepository;
         this.budgetRepository = budgetRepository;
         this.expenseRepository = expenseRepository;
     }
@@ -27,18 +33,18 @@ public class BudgetService {
     }
 
     public Budget getBudgetById(Long id) {
-        return budgetRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Account not found with ID " + id));
+        return budgetRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Budget with ID " + id + " not found"));
     }
 
     public List<Budget> getBudgetsByMonth(Long accountId, YearMonth yearMonth) {
         return budgetRepository.findByAccountId(accountId).stream()
-                .filter(budget -> YearMonth.from(budget.getBudgetMonth()).equals(yearMonth))
+                .filter(budget -> budget.getBudgetMonth().equals(yearMonth))
                 .toList();
     }
 
     public BigDecimal getMonthlyBudget(Long accountId, YearMonth yearMonth) {
         return budgetRepository.findByAccountId(accountId).stream()
-                .filter(budget -> YearMonth.from(budget.getBudgetMonth()).equals(yearMonth))
+                .filter(budget -> budget.getBudgetMonth().equals(yearMonth))
                 .map(Budget::getBudgetTotal)
                 .reduce(BigDecimal.ZERO, BigDecimal::add);
     }
@@ -70,29 +76,31 @@ public class BudgetService {
         return overspent;
     }
 
-    public void addBudget(Budget budget) {
+    public void addBudget(CreateBudgetRequest request) {
+        Account account = accountRepository.findById(request.accountId())
+                .orElseThrow(() -> new ResourceNotFoundException("Account with ID " + request.accountId() + " not found"));
+
+        Budget budget = new Budget(request.budgetCategory(), request.budgetTotal(), request.budgetMonth());
+        budget.setAccount(account);
+
         budgetRepository.save(budget);
     }
 
-    public void updateBudget(Long id, Budget budget) {
-        Budget budgetExist = budgetRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Account not found with ID " + id));
+    public void updateBudget(Long id, UpdateBudgetRequest request) {
+        Budget budget = budgetRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Budget with ID " + id + " not found"));
 
-        if (budget.getBudgetCategory() != null) {
-            budgetExist.setBudgetCategory(budget.getBudgetCategory());
-        }
+        budget.setBudgetCategory(request.budgetCategory());
+        budget.setBudgetTotal(request.budgetTotal());
+        budget.setBudgetMonth(request.budgetMonth());
 
-        if (budget.getBudgetTotal() != null) {
-            budgetExist.setBudgetTotal(budget.getBudgetTotal());
-        }
-
-        if (budget.getBudgetMonth() != null) {
-            budgetExist.setBudgetMonth(budget.getBudgetMonth());
-        }
-
-        budgetRepository.save(budgetExist);
+        budgetRepository.save(budget);
     }
 
     public void deleteBudget(Long id) {
+        if (!budgetRepository.existsById(id)) {
+            throw new ResourceNotFoundException("Budget with ID " + id + " not found");
+        }
         budgetRepository.deleteById(id);
     }
 }

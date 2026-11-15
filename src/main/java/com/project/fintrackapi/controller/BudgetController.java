@@ -1,5 +1,7 @@
 package com.project.fintrackapi.controller;
 
+import com.project.fintrackapi.dto.CreateBudgetRequest;
+import com.project.fintrackapi.dto.UpdateBudgetRequest;
 import com.project.fintrackapi.service.BudgetService;
 import com.project.fintrackapi.entity.Budget;
 import jakarta.validation.Valid;
@@ -44,13 +46,13 @@ public class BudgetController {
     }
 
     @PostMapping
-    public void addBudget(@Valid @RequestBody Budget budget) {
-        budgetService.addBudget(budget);
+    public void addBudget(@Valid @RequestBody CreateBudgetRequest request) {
+        budgetService.addBudget(request);
     }
 
     @PutMapping("{id}")
-    public void updateBudget(@PathVariable Long id, @Valid @RequestBody Budget budget) {
-        budgetService.updateBudget(id, budget);
+    public void updateBudget(@PathVariable Long id, @Valid @RequestBody UpdateBudgetRequest request) {
+        budgetService.updateBudget(id, request);
     }
 
     @DeleteMapping("{id}")

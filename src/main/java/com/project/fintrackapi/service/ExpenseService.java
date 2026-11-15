@@ -8,7 +8,6 @@ import com.project.fintrackapi.entity.Expense;
 import com.project.fintrackapi.exception.ResourceNotFoundException;
 import com.project.fintrackapi.repository.AccountRepository;
 import com.project.fintrackapi.repository.ExpenseRepository;
-import jakarta.validation.Valid;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
