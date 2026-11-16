@@ -11,6 +11,10 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
@@ -36,12 +40,14 @@ class BudgetServiceTest {
         Budget secondBudget = new Budget(Category.SHOPPING, BigDecimal.valueOf(200), YearMonth.of(2026, 6));
         Budget thirdBudget = new Budget(Category.SUBSCRIPTIONS, BigDecimal.valueOf(100), YearMonth.of(2026, 6));
 
-        when(budgetRepository.findAll())
-                .thenReturn(List.of(firstBudget, secondBudget, thirdBudget));
+        Pageable pageable = PageRequest.of(0, 10);
 
-        List<Budget> allBudgets = budgetService.getAllBudgets();
+        when(budgetRepository.findAll(pageable))
+                .thenReturn(new PageImpl<>(List.of(firstBudget, secondBudget, thirdBudget)));
 
-        assertEquals(3, allBudgets.size());
+        Page<Budget> allBudgets = budgetService.getAllBudgets(pageable);
+
+        assertEquals(3, allBudgets.getContent().size());
     }
 
     @Test

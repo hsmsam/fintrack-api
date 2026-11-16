@@ -8,6 +8,8 @@ import com.project.fintrackapi.repository.AccountRepository;
 import com.project.fintrackapi.repository.BudgetRepository;
 import com.project.fintrackapi.repository.ExpenseRepository;
 import com.project.fintrackapi.repository.IncomeRepository;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -27,8 +29,8 @@ public class AccountService {
         this.budgetRepository = budgetRepository;
     }
 
-    public List<Account> getAllAccounts() {
-        return accountRepository.findAll();
+    public Page<Account> getAllAccounts(Pageable page) {
+        return accountRepository.findAll(page);
     }
 
     public Account getAccountById(Long id) {

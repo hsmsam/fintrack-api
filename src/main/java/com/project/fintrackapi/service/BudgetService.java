@@ -9,6 +9,8 @@ import com.project.fintrackapi.exception.ResourceNotFoundException;
 import com.project.fintrackapi.repository.AccountRepository;
 import com.project.fintrackapi.repository.BudgetRepository;
 import com.project.fintrackapi.repository.ExpenseRepository;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
@@ -28,8 +30,8 @@ public class BudgetService {
         this.expenseRepository = expenseRepository;
     }
 
-    public List<Budget> getAllBudgets() {
-        return budgetRepository.findAll();
+    public Page<Budget> getAllBudgets(Pageable page) {
+        return budgetRepository.findAll(page);
     }
 
     public Budget getBudgetById(Long id) {

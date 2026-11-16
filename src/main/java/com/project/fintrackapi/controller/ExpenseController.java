@@ -6,6 +6,8 @@ import com.project.fintrackapi.enums.Category;
 import com.project.fintrackapi.service.ExpenseService;
 import com.project.fintrackapi.entity.Expense;
 import jakarta.validation.Valid;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.web.bind.annotation.*;
 
 import java.math.BigDecimal;
@@ -22,8 +24,8 @@ public class ExpenseController {
     }
 
     @GetMapping
-    public List<Expense> getAllExpenses() {
-        return expenseService.getAllExpenses();
+    public Page<Expense> getAllExpenses(Pageable page) {
+        return expenseService.getAllExpenses(page);
     }
 
     @GetMapping("{id}")

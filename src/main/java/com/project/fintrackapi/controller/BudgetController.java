@@ -5,6 +5,8 @@ import com.project.fintrackapi.dto.UpdateBudgetRequest;
 import com.project.fintrackapi.service.BudgetService;
 import com.project.fintrackapi.entity.Budget;
 import jakarta.validation.Valid;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.web.bind.annotation.*;
 
 import java.math.BigDecimal;
@@ -21,8 +23,8 @@ public class BudgetController {
     }
 
     @GetMapping
-    public List<Budget> getAllBudgets() {
-        return budgetService.getAllBudgets();
+    public Page<Budget> getAllBudgets(Pageable page) {
+        return budgetService.getAllBudgets(page);
     }
 
     @GetMapping("{id}")

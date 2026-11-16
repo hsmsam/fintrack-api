@@ -5,6 +5,8 @@ import com.project.fintrackapi.dto.UpdateAccountRequest;
 import com.project.fintrackapi.service.AccountService;
 import com.project.fintrackapi.entity.Account;
 import jakarta.validation.Valid;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -19,8 +21,8 @@ public class AccountController {
     }
 
     @GetMapping
-    public List<Account> getAllAccounts() {
-        return accountService.getAllAccounts();
+    public Page<Account> getAllAccounts(Pageable page) {
+        return accountService.getAllAccounts(page);
     }
 
     @GetMapping("{id}")

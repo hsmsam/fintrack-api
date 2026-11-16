@@ -9,6 +9,10 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
@@ -33,12 +37,14 @@ class ExpenseServiceTest {
         Expense thirdExpense = new Expense(BigDecimal.valueOf(200), Category.BILLS, LocalDate.of(2026, 3, 1), Frequency.MONTHLY, "Water, gas and electricity bills");
         Expense fourthExpense = new Expense(BigDecimal.valueOf(300), Category.FOOD, LocalDate.of(2026, 3, 15), Frequency.MONTHLY, "Monthly food shop");
 
-        when(expenseRepository.findAll())
-                .thenReturn(List.of(firstExpense, secondExpense, thirdExpense, fourthExpense));
+        Pageable pageable = PageRequest.of(0, 10);
 
-        List<Expense> allExpenses = expenseService.getAllExpenses();
+        when(expenseRepository.findAll(pageable))
+                .thenReturn(new PageImpl<>(List.of(firstExpense, secondExpense, thirdExpense, fourthExpense)));
 
-        assertEquals(4, allExpenses.size());
+        Page<Expense> allExpenses = expenseService.getAllExpenses(pageable);
+
+        assertEquals(4, allExpenses.getContent().size());
     }
 
     @Test
