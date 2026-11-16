@@ -11,11 +11,16 @@ A personal finance tracking REST API built with Java and Spring Boot. FinTrack l
 - Running balance calculated from full account history, independent of month
 - Category and Frequency enforced via enums — Housing, Bills, Transport, Food, Healthcare, Shopping, Leisure, Subscriptions, Savings, Debt, Other
 - Month-aware calculations use `YearMonth`, so figures are correctly scoped to a specific year and month rather than colliding across years
+- Request DTOs for creating and updating records, so clients send only the fields they should control (for example, an income's account is set once at creation by `accountId` and cannot be changed by an update)
+- Bean Validation on every request, with field-level error messages (negative amounts, blank names, missing dates, invalid emails and so on)
+- Global exception handling — `404 Not Found` for missing records and `400 Bad Request` for invalid input, instead of generic `500` errors
+- Pagination on every list endpoint
+- Deleting an account also deletes its incomes, expenses, and budgets, in a single transaction
 
 ## Tech Stack
 
 - **Java 21**
-- **Spring Boot** (Web, Data JPA)
+- **Spring Boot** (Web, Data JPA, Validation)
 - **PostgreSQL**
 - **Docker Compose**
 - **Maven**
@@ -52,21 +57,23 @@ The API starts on `http://localhost:8080`.
 
 All endpoints are under `/api/v1`. `{yearMonth}` is in `YYYY-MM` format, e.g. `2026-03`.
 
+List endpoints (`GET /account`, `/income`, `/expense`, `/budget`) are paginated. Use `?page=0&size=20` and optionally `&sort=amount,desc` (results are sorted by `id` by default). The response contains the items in `content` plus paging fields such as `totalElements` and `totalPages`.
+
 ### Account
 
 | Method | Endpoint | Description |
 |---|---|---|
-| GET | `/account` | Get all accounts |
+| GET | `/account` | Get all accounts (paginated) |
 | GET | `/account/{id}` | Get account by ID |
 | POST | `/account` | Add a new account |
 | PUT | `/account/{id}` | Update account details |
-| DELETE | `/account/{id}` | Remove an account |
+| DELETE | `/account/{id}` | Remove an account and all of its incomes, expenses, and budgets |
 
 ### Income
 
 | Method | Endpoint | Description |
 |---|---|---|
-| GET | `/income` | Get all income records |
+| GET | `/income` | Get all income records (paginated) |
 | GET | `/income/{id}` | Get income by ID |
 | GET | `/income/total-income/{accountId}/{yearMonth}` | Get total income for a given month |
 | POST | `/income` | Add a new income record |
@@ -77,7 +84,7 @@ All endpoints are under `/api/v1`. `{yearMonth}` is in `YYYY-MM` format, e.g. `2
 
 | Method | Endpoint | Description |
 |---|---|---|
-| GET | `/expense` | Get all expenses |
+| GET | `/expense` | Get all expenses (paginated) |
 | GET | `/expense/{id}` | Get expense by ID |
 | GET | `/expense/total-spent/{accountId}/{yearMonth}` | Get total spent for a given month |
 | GET | `/expense/largest-expense/{accountId}/{yearMonth}` | Get the largest single expense for a given month |
@@ -90,7 +97,7 @@ All endpoints are under `/api/v1`. `{yearMonth}` is in `YYYY-MM` format, e.g. `2
 
 | Method | Endpoint | Description |
 |---|---|---|
-| GET | `/budget` | Get all budgets |
+| GET | `/budget` | Get all budgets (paginated) |
 | GET | `/budget/{id}` | Get budget by ID |
 | GET | `/budget/{accountId}/{yearMonth}` | Get all budgets for a given month |
 | GET | `/budget/monthly-budget/{accountId}/{yearMonth}` | Get total budgeted amount for a given month |
@@ -112,6 +119,8 @@ All endpoints are under `/api/v1`. `{yearMonth}` is in `YYYY-MM` format, e.g. `2
 
 ## Example Requests
 
+Create requests (`POST`) for income, expenses, and budgets take a flat `accountId`. Update requests (`PUT`) do not include `accountId`, because a record cannot be moved to a different account.
+
 ### Add an Account
 
 ```
@@ -131,12 +140,27 @@ POST /api/v1/income
 Content-Type: application/json
 
 {
-  "account": { "id": 1 },
+  "accountId": 1,
   "amount": 2000,
   "source": "Work",
   "dateReceived": "2026-03-07",
   "frequency": "MONTHLY",
   "description": "Monthly work wage"
+}
+```
+
+### Update an Income Record
+
+```
+PUT /api/v1/income/1
+Content-Type: application/json
+
+{
+  "amount": 2200,
+  "source": "Work",
+  "dateReceived": "2026-03-07",
+  "frequency": "MONTHLY",
+  "description": "Monthly work wage after pay rise"
 }
 ```
 
@@ -147,7 +171,7 @@ POST /api/v1/expense
 Content-Type: application/json
 
 {
-  "account": { "id": 1 },
+  "accountId": 1,
   "amount": 140,
   "category": "LEISURE",
   "datePaid": "2026-03-10",
@@ -163,7 +187,7 @@ POST /api/v1/budget
 Content-Type: application/json
 
 {
-  "account": { "id": 1 },
+  "accountId": 1,
   "budgetCategory": "LEISURE",
   "budgetTotal": 200,
   "budgetMonth": "2026-03"
@@ -195,15 +219,48 @@ Sample `.http` request files for every resource are included in the `http/` dire
 
 ---
 
+## Validation and Error Handling
+
+Request bodies are validated before any business logic runs. Errors are returned by a single `@RestControllerAdvice` handler (`GlobalExceptionHandler`).
+
+**Invalid input returns `400 Bad Request`** with a map of field name to message:
+
+```
+POST /api/v1/expense
+{ "accountId": 1, "amount": -150, "category": "FOOD", "datePaid": "2026-03-10", "frequency": "MONTHLY" }
+
+HTTP/1.1 400
+{
+  "amount": "Expense amount must be greater than zero"
+}
+```
+
+**A missing record returns `404 Not Found`** with a message:
+
+```
+POST /api/v1/income   (with "accountId": 9999)
+
+HTTP/1.1 404
+Account with ID 9999 not found
+```
+
+The same applies to unknown IDs on `GET`, `PUT`, and `DELETE`.
+
+Validation rules include: amounts must be present and greater than zero; text fields such as names and sources must not be blank; dates, categories, frequencies, and months are required; and account emails must be valid.
+
+---
+
 ## Project Structure
 
 ```
 src/
 ├── main/java/com/project/fintrackapi/
 │   ├── controller/    Account, Income, Expense, Budget, FinancialSummary controllers
+│   ├── dto/           Create and update request records for each resource
 │   ├── service/       Business logic and cross-entity calculations
 │   ├── repository/    Spring Data JPA interfaces
 │   ├── entity/        Account, Income, Expense, Budget, FinancialSummary
+│   ├── exception/     ResourceNotFoundException and GlobalExceptionHandler
 │   └── enums/         Category, Frequency
 ├── test/java/com/project/fintrackapi/service/
 │   └── Unit tests for each service, mirroring the main package structure
@@ -220,6 +277,8 @@ Unit tests cover the service layer using JUnit 5 and Mockito, focused on methods
 ./mvnw test
 ```
 
+> The application context test connects to the PostgreSQL database, so start it first with `docker-compose up -d`.
+
 ## What I Learned
 
 - Designing a multi-entity REST API around a shared owner (`Account`), and scoping every query and calculation by `accountId` rather than operating globally
@@ -229,13 +288,19 @@ Unit tests cover the service layer using JUnit 5 and Mockito, focused on methods
 - Writing unit tests with JUnit 5 and Mockito, including mocking one service layer against another (not just repositories), and being deliberate about which methods are worth testing
 - Structuring a Spring Boot application into controller, service, repository, and entity packages rather than one flat package
 - Using Mockito's `@Mock`/`@InjectMocks` to isolate a class under test from its real dependencies, and testing both branches of methods that return `null`/zero on empty input
+- Using Bean Validation (`@Valid`, `@NotNull`, `@NotBlank`, `@Positive`) on request objects, and why `@Positive` alone still accepts `null`
+- Centralising error handling with `@RestControllerAdvice`, and choosing the correct status code (`400` for bad input, `404` for a missing resource) instead of letting unhandled exceptions become `500` errors
+- Using request DTOs (as Java records) to separate the API contract from the JPA entities, so a client cannot set fields like `id` or move a record to a different account
+- Paginating list endpoints with Spring Data's `Pageable`
+- Using `@Transactional` so that deleting an account and all of its records either fully succeeds or fully fails
 
 ## Known Limitations / Future Improvements
 
+- **No authentication or authorisation.** Every endpoint is open.
+- **Responses still return entities directly.** Requests use DTOs, but responses do not, so each income, expense, and budget response includes its full nested account (including the email address). Response DTOs are a planned improvement.
+- **Account emails are not enforced as unique.**
+- **Deleting an account permanently removes its data.** The delete is atomic (all or nothing), but there is no soft delete or undo.
 - **Frequency is descriptive only.** A `WEEKLY` or `ANNUALLY` income/expense record is not currently projected into a monthly-equivalent figure — one record represents one actual transaction on one date. Recurring-payment projection is a planned enhancement.
-- **Entities are returned directly**, rather than through request/response DTOs. This risks overposting and couples the API contract to the JPA model.
-- **No global exception handling.** Missing records currently return HTTP 500 rather than 404.
-- **No input validation** (e.g. negative amounts, malformed emails are not currently rejected).
 - **Aggregations are computed in application memory** rather than pushed down to the database via SQL aggregation queries.
 
 ## Author
