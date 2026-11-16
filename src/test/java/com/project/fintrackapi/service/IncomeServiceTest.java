@@ -8,6 +8,10 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
@@ -30,12 +34,14 @@ class IncomeServiceTest {
         Income firstIncome = new Income(BigDecimal.valueOf(2000), "Work", LocalDate.of(2026, 4, 3), Frequency.MONTHLY, "Monthly work wage");
         Income secondIncome = new Income(BigDecimal.valueOf(150), "Side income", LocalDate.of(2026, 4, 3), Frequency.WEEKLY, "Forex trading");
 
-        when(incomeRepository.findAll())
-                .thenReturn(List.of(firstIncome, secondIncome));
+        Pageable pageable = PageRequest.of(0, 10);
 
-        List<Income> allIncomes = incomeService.getAllIncomes();
+        when(incomeRepository.findAll(pageable))
+                .thenReturn(new PageImpl<>(List.of(firstIncome, secondIncome)));
 
-        assertEquals(2, allIncomes.size());
+        Page<Income> allIncomes = incomeService.getAllIncomes(pageable);
+
+        assertEquals(2, allIncomes.getContent().size());
     }
 
     @Test

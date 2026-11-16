@@ -5,11 +5,13 @@ import com.project.fintrackapi.dto.UpdateIncomeRequest;
 import com.project.fintrackapi.service.IncomeService;
 import com.project.fintrackapi.entity.Income;
 import jakarta.validation.Valid;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.web.bind.annotation.*;
 
 import java.math.BigDecimal;
 import java.time.YearMonth;
-import java.util.List;
 
 @RestController
 @RequestMapping("api/v1/income")
@@ -21,8 +23,8 @@ public class IncomeController {
     }
 
     @GetMapping
-    public List<Income> getAllIncomes() {
-        return incomeService.getAllIncomes();
+    public Page<Income> getAllIncomes(Pageable page) {
+        return incomeService.getAllIncomes(page);
     }
 
     @GetMapping("{id}")

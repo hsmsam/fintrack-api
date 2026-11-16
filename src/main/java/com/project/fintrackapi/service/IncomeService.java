@@ -7,6 +7,8 @@ import com.project.fintrackapi.entity.Income;
 import com.project.fintrackapi.exception.ResourceNotFoundException;
 import com.project.fintrackapi.repository.AccountRepository;
 import com.project.fintrackapi.repository.IncomeRepository;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
@@ -23,8 +25,8 @@ public class IncomeService {
         this.incomeRepository = incomeRepository;
     }
 
-    public List<Income> getAllIncomes() {
-        return incomeRepository.findAll();
+    public Page<Income> getAllIncomes(Pageable page) {
+        return incomeRepository.findAll(page);
     }
 
     public Income getIncomeById(Long id) {
