@@ -7,6 +7,7 @@ import com.project.fintrackapi.entity.Account;
 import jakarta.validation.Valid;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -21,7 +22,7 @@ public class AccountController {
     }
 
     @GetMapping
-    public Page<Account> getAllAccounts(Pageable page) {
+    public Page<Account> getAllAccounts(@PageableDefault(sort = "id") Pageable page) {
         return accountService.getAllAccounts(page);
     }
 

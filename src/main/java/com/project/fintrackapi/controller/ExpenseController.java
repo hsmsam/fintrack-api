@@ -8,6 +8,7 @@ import com.project.fintrackapi.entity.Expense;
 import jakarta.validation.Valid;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.web.bind.annotation.*;
 
 import java.math.BigDecimal;
@@ -24,7 +25,7 @@ public class ExpenseController {
     }
 
     @GetMapping
-    public Page<Expense> getAllExpenses(Pageable page) {
+    public Page<Expense> getAllExpenses(@PageableDefault(sort = "id") Pageable page) {
         return expenseService.getAllExpenses(page);
     }
 

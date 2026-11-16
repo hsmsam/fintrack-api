@@ -7,6 +7,7 @@ import com.project.fintrackapi.entity.Budget;
 import jakarta.validation.Valid;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.web.bind.annotation.*;
 
 import java.math.BigDecimal;
@@ -23,7 +24,7 @@ public class BudgetController {
     }
 
     @GetMapping
-    public Page<Budget> getAllBudgets(Pageable page) {
+    public Page<Budget> getAllBudgets(@PageableDefault(sort = "id") Pageable page) {
         return budgetService.getAllBudgets(page);
     }
 
