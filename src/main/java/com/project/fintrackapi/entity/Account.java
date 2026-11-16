@@ -17,8 +17,8 @@ public class Account {
     private Long id;
     @NotBlank(message = "Account must have a name")
     private String name;
+    @Email(message = "Account email must be a valid email address")
     @NotBlank(message = "Account must have a email")
-    @Email
     private String email;
 
     public Account() {

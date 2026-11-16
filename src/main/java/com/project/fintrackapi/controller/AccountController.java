@@ -1,5 +1,7 @@
 package com.project.fintrackapi.controller;
 
+import com.project.fintrackapi.dto.CreateAccountRequest;
+import com.project.fintrackapi.dto.UpdateAccountRequest;
 import com.project.fintrackapi.service.AccountService;
 import com.project.fintrackapi.entity.Account;
 import jakarta.validation.Valid;
@@ -27,13 +29,13 @@ public class AccountController {
     }
 
     @PostMapping
-    public void addAccount(@Valid @RequestBody Account account) {
-        accountService.addAccount(account);
+    public void addAccount(@Valid @RequestBody CreateAccountRequest request) {
+        accountService.addAccount(request);
     }
 
     @PutMapping("{id}")
-    public void updateAccount(@PathVariable Long id, @Valid @RequestBody Account account) {
-        accountService.updateAccount(id, account);
+    public void updateAccount(@PathVariable Long id, @Valid @RequestBody UpdateAccountRequest request) {
+        accountService.updateAccount(id, request);
     }
 
     @DeleteMapping("{id}")
