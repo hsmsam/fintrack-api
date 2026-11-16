@@ -3,19 +3,28 @@ package com.project.fintrackapi.service;
 import com.project.fintrackapi.dto.CreateAccountRequest;
 import com.project.fintrackapi.dto.UpdateAccountRequest;
 import com.project.fintrackapi.entity.Account;
-import com.project.fintrackapi.entity.Budget;
 import com.project.fintrackapi.exception.ResourceNotFoundException;
 import com.project.fintrackapi.repository.AccountRepository;
+import com.project.fintrackapi.repository.BudgetRepository;
+import com.project.fintrackapi.repository.ExpenseRepository;
+import com.project.fintrackapi.repository.IncomeRepository;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
 @Service
 public class AccountService {
     private final AccountRepository accountRepository;
+    private final IncomeRepository incomeRepository;
+    private final ExpenseRepository expenseRepository;
+    private final BudgetRepository budgetRepository;
 
-    public AccountService(AccountRepository accountRepository) {
+    public AccountService(AccountRepository accountRepository, IncomeRepository incomeRepository, ExpenseRepository expenseRepository, BudgetRepository budgetRepository) {
         this.accountRepository = accountRepository;
+        this.incomeRepository = incomeRepository;
+        this.expenseRepository = expenseRepository;
+        this.budgetRepository = budgetRepository;
     }
 
     public List<Account> getAllAccounts() {
@@ -42,10 +51,14 @@ public class AccountService {
         accountRepository.save(account);
     }
 
+    @Transactional
     public void deleteAccount(Long id) {
         if (!accountRepository.existsById(id)) {
             throw new ResourceNotFoundException("Account with ID " + id + " not found");
         }
+        incomeRepository.deleteByAccountId(id);
+        expenseRepository.deleteByAccountId(id);
+        budgetRepository.deleteByAccountId(id);
         accountRepository.deleteById(id);
     }
 }

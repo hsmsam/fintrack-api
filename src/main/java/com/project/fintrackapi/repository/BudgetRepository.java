@@ -7,4 +7,6 @@ import java.util.List;
 
 public interface BudgetRepository extends JpaRepository<Budget, Long> {
     List<Budget> findByAccountId(Long id);
+
+    void deleteByAccountId(Long accountId);
 }
