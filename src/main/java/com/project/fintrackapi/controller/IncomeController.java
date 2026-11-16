@@ -23,7 +23,7 @@ public class IncomeController {
     }
 
     @GetMapping
-    public Page<Income> getAllIncomes(Pageable page) {
+    public Page<Income> getAllIncomes(@PageableDefault(sort = "id") Pageable page) {
         return incomeService.getAllIncomes(page);
     }
 
